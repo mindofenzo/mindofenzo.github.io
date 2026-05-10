@@ -1,61 +1,262 @@
-/** --- LEVEL 2: ANIMAL SAFARI 2-FRAME ANIMATIONS --- */
+/** --- LEVEL 2: CUTE BOUNCING ANIMAL FACES --- */
+// Designed using a 9x9 grid, face-forward, with a 2-frame "hop" animation!
 
 Object.assign(artLibrary, {
     
     // --- HOME ---
-    dog: [ // Brown floppy ears
-        ["  B   B  ", " BBB BBB ", " BBBBBBB ", " B K K B ", " BB K BB ", "  BBBBB  "],
-        ["  B   B  ", " BBB BBB ", " BBBBBBB ", " B K K B ", " B M M B ", "  BBBBB  "] // Blinking/Smiling
+    dog: [ 
+        [ // Frame 1: Down
+            "         ",
+            "  B   B  ",
+            " BB   BB ",
+            " BBWWWBB ",
+            " OOWWWWW ",
+            " OKWWWKW ",
+            " OOWWWWW ",
+            "  WWKWW  ",
+            "  WWRWW  "
+        ],
+        [ // Frame 2: Hopping up
+            "  B   B  ",
+            " BB   BB ",
+            " BBWWWBB ",
+            " OOWWWWW ",
+            " OKWWWKW ",
+            " OOWWWWW ",
+            "  WWKWW  ",
+            "  WWRWW  ",
+            "         "
+        ]
     ],
-    cat: [ // Orange with pointy ears
-        [" O     O ", " OO   OO ", " OOOOOOO ", " O K K O ", " OO O OO ", "  OOOOO  "],
-        [" O     O ", " OO   OO ", " OOOOOOO ", " O K K O ", " OOO OOO ", "  OOOOO  "]
+    cat: [ 
+        [
+            "         ",
+            " A     A ",
+            " AA   AA ",
+            " AAAAAAA ",
+            " AKAAAKA ",
+            " MAAWAAM ",
+            "  AAAAA  ",
+            "         ",
+            "         "
+        ],
+        [
+            " A     A ",
+            " AA   AA ",
+            " AAAAAAA ",
+            " AKAAAKA ",
+            " MAAWAAM ",
+            "  AAAAA  ",
+            "         ",
+            "         ",
+            "         "
+        ]
     ],
 
     // --- FARM ---
-    cow: [ // Black/White spots, pink nose
-        [" K     K ", " WWWWWWW ", "WWKWWWWKW", "WWWKWWWWW", " WMMMMMW ", "  M K M  "],
-        [" K     K ", " WWWWWWW ", "WWKWWWWKW", "WWWKWWWWW", " WMMMMMW ", "  M M M  "]
+    cow: [ 
+        [
+            "         ",
+            " K     K ",
+            " WW   WW ",
+            " WWWWWWW ",
+            " WKWKWKW ",
+            " WWWWWWW ",
+            "  MMMMM  ",
+            "  MKMKM  ",
+            "         "
+        ],
+        [
+            " K     K ",
+            " WW   WW ",
+            " WWWWWWW ",
+            " WKWKWKW ",
+            " WWWWWWW ",
+            "  MMMMM  ",
+            "  MKMKM  ",
+            "         ",
+            "         "
+        ]
     ],
-    pig: [ // Round and pink
-        [" M     M ", " MMMMMMM ", "MM K K MM", "MMMMMMMMM", " MMRRRMM ", "  R K R  "],
-        [" M     M ", " MMMMMMM ", "MM K K MM", "MMMMMMMMM", " MMRRRMM ", "  RRRRR  "]
+    pig: [ 
+        [
+            "         ",
+            " M     M ",
+            " MM   MM ",
+            " MMMMMMM ",
+            " MKMMMKM ",
+            " MMMMMMM ",
+            "  MMMMM  ",
+            "  MKMKM  ",
+            "         "
+        ],
+        [
+            " M     M ",
+            " MM   MM ",
+            " MMMMMMM ",
+            " MKMMMKM ",
+            " MMMMMMM ",
+            "  MMMMM  ",
+            "  MKMKM  ",
+            "         ",
+            "         "
+        ]
     ],
 
     // --- ZOO ---
-    giraffe: [ // Super long neck
-        ["  Y   Y  ", "  YY YY  ", "  YKYKY  ", "  YYYYY  ", "   YBY   ", "   YYY   ", "   YBY   ", "   YYY   "],
-        ["  Y   Y  ", "  YY YY  ", "  YKYKY  ", "  YYYYY  ", "   YBY   ", "   YYY   ", "   YYY   ", "   YYY   "]
+    giraffe: [ 
+        [
+            "         ",
+            " B     B ",
+            " Y     Y ",
+            " YYYYYYY ",
+            " YKYYYKY ",
+            " YYYYYYY ",
+            "  YYYYY  ",
+            "  YBYBY  ",
+            "         "
+        ],
+        [
+            " B     B ",
+            " Y     Y ",
+            " YYYYYYY ",
+            " YKYYYKY ",
+            " YYYYYYY ",
+            "  YYYYY  ",
+            "  YBYBY  ",
+            "         ",
+            "         "
+        ]
     ],
-    zebra: [ // Black and white stripes
-        ["  W   W  ", "  WW WW  ", "  WKWKW  ", "  WWWWW  ", "   KWK   ", "   WWW   ", "   KWK   "],
-        ["  W   W  ", "  WW WW  ", "  WKWKW  ", "  WWWWW  ", "   WWW   ", "   KWK   ", "   WWW   "]
+    zebra: [ 
+        [
+            "         ",
+            " W  K  W ",
+            " WK K KW ",
+            " WWKKKWW ",
+            " W K K W ",
+            "  AAAAA  ",
+            " AA K AA ",
+            "  AAAAA  ",
+            "         "
+        ],
+        [
+            " W  K  W ",
+            " WK K KW ",
+            " WWKKKWW ",
+            " W K K W ",
+            "  AAAAA  ",
+            " AA K AA ",
+            "  AAAAA  ",
+            "         ",
+            "         "
+        ]
     ],
 
     // --- JUNGLE ---
-    lion: [ // Huge orange mane, yellow face
-        [" OOOOOOO ", "OOYYYYYOO", "OOYKYKYOO", "OOYYYYYOO", "OOY Y YOO", " OOOOOOO "],
-        [" OOOOOOO ", "OOYYYYYOO", "OOYKYKYOO", "OOYYYYYOO", "OO YYY OO", " OOOOOOO "]
+    lion: [ 
+        [
+            "         ",
+            "  OOOOO  ",
+            " OYOOOYO ", 
+            " OYYYYYO ",
+            " OYK YKO ",
+            " OYWMWYO ", 
+            " OOWWWOO ", 
+            "  OOOOO  ",
+            "         "
+        ],
+        [
+            "  OOOOO  ",
+            " OYOOOYO ",
+            " OYYYYYO ",
+            " OYK YKO ",
+            " OYWMWYO ",
+            " OOWWWOO ",
+            "  OOOOO  ",
+            "         ",
+            "         "
+        ]
     ],
-    tiger: [ // Orange with black stripes
-        [" O     O ", " OOOOOOO ", "OOKOKOKOO", "OOOOOOOOO", " OOWWWOO ", "   K K   "],
-        [" O     O ", " OOOOOOO ", "OOKOKOKOO", "OOOOOOOOO", " OOWWWOO ", "   KKK   "]
+    tiger: [ 
+        [
+            "         ",
+            " OY   YO ", 
+            " OOOOOOO ",
+            " OK O KO ", 
+            " O K K O ", 
+            " KOSSSOK ", 
+            "  S K S  ", 
+            "   SSS   ",
+            "         "
+        ],
+        [
+            " OY   YO ",
+            " OOOOOOO ",
+            " OK O KO ",
+            " O K K O ",
+            " KOSSSOK ",
+            "  S K S  ",
+            "   SSS   ",
+            "         ",
+            "         "
+        ]
     ],
 
     // --- OCEAN ---
-    fish: [ // Clownfish style (Orange/White)
-        ["   O     ", " OOWOO   ", "OOOWOOO O", "OOOWOOO O", " OOWOO   ", "   O     "],
-        ["   O     ", " OOWOO   ", "OOOWOOO O", "OOOWOOO  ", " OOWOO  O", "   O     "]
+    fish: [ 
+        [
+            "         ",
+            "   OOO   ",
+            "  OOOOO  ",
+            " OOWWWOO ",
+            " OWK WKWO",
+            " OOWWWOO ",
+            "  OOOOO  ",
+            "   OOO   ",
+            "         "
+        ],
+        [
+            "   OOO   ",
+            "  OOOOO  ",
+            " OOWWWOO ",
+            " OWK WKWO",
+            " OOWWWOO ",
+            "  OOOOO  ",
+            "   OOO   ",
+            "         ",
+            "         "
+        ]
     ],
-    turtle: [ // Green shell
-        ["   G     ", "  GGG    ", " DDDDD   ", "DDDDDDD G", "GDDDDDD  ", " DDDDD   "],
-        ["   G     ", "  GGG    ", " DDDDD   ", "DDDDDDD  ", " DDDDDD G", " DDDDD   "]
+    turtle: [ 
+        [
+            "         ",
+            "  G   G  ",
+            "  DDDDD  ",
+            " DDDDDDD ",
+            " DDDDDDD ",
+            " DDDDDDD ",
+            "  DDDDD  ",
+            " G  G  G ",
+            "         "
+        ],
+        [
+            "  G   G  ",
+            "  DDDDD  ",
+            " DDDDDDD ",
+            " DDDDDDD ",
+            " DDDDDDD ",
+            "  DDDDD  ",
+            " G  G  G ",
+            "         ",
+            "         "
+        ]
     ]
 });
 
 // Update the levels logic to use the new file-based audio targeting
 const gameLevels = {
-    cameron: themes, // Re-uses the themes array from pixelArt.js
+    cameron: themes, // Re-uses the themes array from pixelart.js
     safari: [
         { name: "Cozy Home", hueOffset: 200, art: ['dog', 'cat'], color: '#00aaff', file: 'music/Home.mp3', effect: 'float' },
         { name: "Sunny Farm", hueOffset: 60, art: ['cow', 'pig'], color: '#ffcc00', file: 'music/Farm.mp3', effect: 'stars' },
