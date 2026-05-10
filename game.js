@@ -47,40 +47,30 @@ function playTone(freq, type, duration, vol=0.1) {
 }
 
 function playJumpSound() { playTone(554.37, 'sine', 0.3, 0.15); }
-function playSmashSound() { 
-    playTone(300, 'square', 0.2, 0.1); playTone(400, 'sawtooth', 0.3, 0.1); 
-}
-function playCrashSound() { 
-    playTone(150, 'sawtooth', 0.5, 0.2); playTone(100, 'square', 0.5, 0.2); 
-}
+function playSmashSound() { playTone(300, 'square', 0.2, 0.1); playTone(400, 'sawtooth', 0.3, 0.1); }
+function playCrashSound() { playTone(150, 'sawtooth', 0.5, 0.2); playTone(100, 'square', 0.5, 0.2); }
 
-/** --- BACKGROUND MUSIC MANAGER & PROGRESSION --- */
-let currentMusic = null;
+/** --- BACKGROUND MUSIC MANAGER (BULLETPROOF FIX) --- */
+const globalMusicPlayer = document.getElementById('bg-music');
+let activeThemes = []; 
 
 function nextLevel() {
-    currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-    playThemeMusic(themes[currentThemeIndex].audioId);
+    currentThemeIndex = (currentThemeIndex + 1) % activeThemes.length;
+    playThemeMusic(activeThemes[currentThemeIndex].file);
     updateUI();
     gameSpeed += 0.5;
 }
 
-function playThemeMusic(audioId) {
-    if (currentMusic) {
-        currentMusic.pause();
-        currentMusic.onended = null; 
-        currentMusic.currentTime = 0;
-    }
-    const nextTrack = document.getElementById(audioId);
-    if (nextTrack) {
-        currentMusic = nextTrack;
-        currentMusic.volume = 0.6; 
-        currentMusic.onended = nextLevel; 
-        let playPromise = currentMusic.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(e => console.error("Audio blocked, check filenames/permissions: " + e));
-        }
-    } else {
-        console.error("Could not find audio element: " + audioId);
+function playThemeMusic(filePath) {
+    globalMusicPlayer.pause();
+    globalMusicPlayer.src = filePath;
+    globalMusicPlayer.load(); // Force browser to fetch the new track immediately
+    globalMusicPlayer.volume = 0.6;
+    globalMusicPlayer.onended = nextLevel; 
+    
+    let playPromise = globalMusicPlayer.play();
+    if (playPromise !== undefined) {
+        playPromise.catch(e => console.error("Audio playback blocked: " + e));
     }
 }
 
@@ -89,14 +79,14 @@ function pauseGame() {
     gameState = 'paused';
     pauseLayer.style.display = 'flex';
     pauseBtn.style.display = 'none';
-    if (currentMusic) currentMusic.pause();
+    globalMusicPlayer.pause();
 }
 
 function resumeGame() {
     gameState = 'playing';
     pauseLayer.style.display = 'none';
     pauseBtn.style.display = 'flex';
-    if (currentMusic) currentMusic.play();
+    globalMusicPlayer.play();
 }
 
 function goHome() {
@@ -105,20 +95,23 @@ function goHome() {
     hud.style.opacity = '0';
     pauseBtn.style.display = 'none';
     levelSelectLayer.style.display = 'flex';
-    if (currentMusic) { currentMusic.pause(); currentMusic.currentTime = 0; }
+    globalMusicPlayer.pause(); 
+    globalMusicPlayer.currentTime = 0; 
 }
 
 /** --- UI EVENT LISTENERS --- */
-document.getElementById('level-cameron').addEventListener('pointerdown', (e) => {
-    e.stopPropagation();
+function startLevel(levelKey) {
+    activeThemes = gameLevels[levelKey];
     levelSelectLayer.style.display = 'none';
     hud.style.opacity = '1';
     pauseBtn.style.display = 'flex';
     gameState = 'playing';
     resetGame(); 
-});
+}
 
-// New Back Button functionality
+document.getElementById('level-cameron').addEventListener('pointerdown', (e) => { e.stopPropagation(); startLevel('cameron'); });
+document.getElementById('level-safari').addEventListener('pointerdown', (e) => { e.stopPropagation(); startLevel('safari'); });
+
 document.getElementById('btn-back-start').addEventListener('pointerdown', (e) => {
     e.stopPropagation();
     levelSelectLayer.style.display = 'none';
@@ -132,36 +125,30 @@ document.getElementById('btn-restart').addEventListener('pointerdown', (e) => { 
 document.getElementById('btn-home').addEventListener('pointerdown', (e) => { e.stopPropagation(); goHome(); });
 
 /** --- MAIN INPUT & JUMP LISTENER --- */
-let isPointerDown = false; // Tracks if screen is being held
+let isPointerDown = false;
 
 window.addEventListener('pointerdown', (e) => {
-    // Ignore UI clicks
     if(e.target.closest('#toddler-toggle') || e.target.closest('.level-card') || 
        e.target.closest('#pause-btn') || e.target.closest('.pause-menu-card') ||
-       e.target.closest('#btn-back-start')) {
-        return;
-    }
+       e.target.closest('#btn-back-start')) return;
 
     isPointerDown = true;
 
     if (gameState === 'start') {
         initSFX();
-        // Robust audio unlock for mobile: Play then immediately pause
-        themes.forEach(t => {
-            let audioTag = document.getElementById(t.audioId);
-            if(audioTag) {
-                audioTag.play().then(() => {
-                    audioTag.pause();
-                    audioTag.currentTime = 0;
-                }).catch(err => {}); // Silently catch initialization blocks
-            }
-        });
+        
+        // THE UNLOCK FIX: Assign a real file to the player so the mobile browser accepts the unlock command
+        globalMusicPlayer.src = 'music/Space.mp3';
+        globalMusicPlayer.load();
+        globalMusicPlayer.play().then(() => {
+            globalMusicPlayer.pause(); 
+            globalMusicPlayer.currentTime = 0;
+        }).catch(err => {}); 
 
         uiLayer.style.display = 'none';
         levelSelectLayer.style.display = 'flex';
         gameState = 'levelSelect';
     } else if (gameState === 'playing') {
-        // Double Jump Logic (Requires a distinct tap)
         if (player.jumpCount < player.maxJumps) {
             player.vy = jumpForce;
             player.isGrounded = false;
@@ -175,7 +162,6 @@ window.addEventListener('pointerdown', (e) => {
     }
 });
 
-// Reset pointer hold state when letting go
 window.addEventListener('pointerup', () => isPointerDown = false);
 window.addEventListener('pointercancel', () => isPointerDown = false);
 
@@ -210,7 +196,7 @@ for(let i=0; i<40; i++) {
 }
 
 function spawnBgProp() {
-    const theme = themes[currentThemeIndex];
+    const theme = activeThemes[currentThemeIndex];
     const artChoices = theme.art;
     const chosenArt = artChoices[Math.floor(Math.random() * artChoices.length)];
 
@@ -224,19 +210,18 @@ function spawnBgProp() {
 /** --- GAME LOGIC --- */
 function resetGame() {
     player.y = height - groundHeight - player.size;
-    player.vy = 0; player.rotation = 0; player.trail = [];
-    player.jumpCount = 0; // Reset jumps on fresh start
+    player.vy = 0; player.rotation = 0; player.trail = []; player.jumpCount = 0;
     obstacles = []; particles = []; bgProps = []; cameraX = 0;
     gameSpeed = 8 + (width / 200);
     
     currentThemeIndex = 0; 
-    bgHue = themes[currentThemeIndex].hueOffset;
-    playThemeMusic(themes[currentThemeIndex].audioId);
+    bgHue = activeThemes[currentThemeIndex].hueOffset;
+    playThemeMusic(activeThemes[currentThemeIndex].file);
     updateUI();
 }
 
 function updateUI() {
-    const theme = themes[currentThemeIndex];
+    const theme = activeThemes[currentThemeIndex];
     progressBar.style.backgroundColor = theme.color;
     levelText.innerText = theme.name;
     player.color = theme.color;
@@ -273,13 +258,10 @@ function update() {
         if(frameCount % 30 === 0) bgPulse = 1.0; 
         bgPulse *= 0.9;
 
-        // Failsafe music progress checking
-        if (currentMusic && !isNaN(currentMusic.duration) && currentMusic.duration > 0) {
-            let progressPct = (currentMusic.currentTime / currentMusic.duration) * 100;
+        if (!isNaN(globalMusicPlayer.duration) && globalMusicPlayer.duration > 0) {
+            let progressPct = (globalMusicPlayer.currentTime / globalMusicPlayer.duration) * 100;
             progressBar.style.width = progressPct + '%';
-            
-            // Backup check in case the onended event fails to fire
-            if (currentMusic.currentTime >= currentMusic.duration - 0.2 && currentMusic.duration > 1) {
+            if (globalMusicPlayer.currentTime >= globalMusicPlayer.duration - 0.2 && globalMusicPlayer.duration > 1) {
                 nextLevel();
             }
         }
@@ -288,20 +270,18 @@ function update() {
         player.y += player.vy;
         if (!player.isGrounded) player.rotation += 6; 
 
-        // Floor Collision & Auto-Hop Logic
         if (player.y + player.size >= height - groundHeight) {
             player.y = height - groundHeight - player.size;
             player.vy = 0;
             if (!player.isGrounded) {
                 player.isGrounded = true;
                 player.rotation = Math.round(player.rotation / 90) * 90;
-                player.jumpCount = 0; // Reset double jump on landing
+                player.jumpCount = 0; 
                 
-                // Hold-to-Jump logic
                 if (isPointerDown) {
                     player.vy = jumpForce;
                     player.isGrounded = false;
-                    player.jumpCount = 1; // Used 1 jump
+                    player.jumpCount = 1; 
                     playJumpSound();
                     spawnParticles(player.x, player.y + player.size, 10, '#ffffff', 0.5);
                 }
@@ -327,7 +307,7 @@ function update() {
             if (prop.x < -200) bgProps.splice(i, 1);
         }
 
-        const themeEffect = themes[currentThemeIndex].effect;
+        const themeEffect = activeThemes[currentThemeIndex].effect;
         bgEnvParticles.forEach(p => {
             if (themeEffect === 'snow') {
                 p.y += p.speed * 1.5; p.x -= p.speed * 0.5;
@@ -359,7 +339,7 @@ function update() {
                     spawnParticles(obs.x + obs.width/2, obs.y + obs.height/2, 40, obs.color, 1.5);
                     obstacles.splice(i, 1); cameraX = 10; 
                     player.vy = -6; player.isGrounded = false;
-                    player.jumpCount = 1; // Give a jump back after smashing!
+                    player.jumpCount = 1;
                 } else {
                     gameState = 'dead'; playCrashSound();
                     spawnParticles(player.x + player.size/2, player.y + player.size/2, 50, player.color, 2);
@@ -408,7 +388,7 @@ function drawPixelArt(ctx, frameData, startX, startY, pixelSize) {
 
 function draw() {
     if (gameState !== 'start' && gameState !== 'levelSelect') {
-        const theme = themes[currentThemeIndex];
+        const theme = activeThemes[currentThemeIndex];
         bgHue += (theme.hueOffset - bgHue) * 0.05; 
     }
     
@@ -419,7 +399,7 @@ function draw() {
     ctx.save();
     ctx.translate(cameraX, 0);
 
-    const currentTheme = themes[currentThemeIndex];
+    const currentTheme = activeThemes ? activeThemes[currentThemeIndex] : null;
     ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
     if(currentTheme && currentTheme.effect === 'embers') ctx.fillStyle = 'rgba(255, 100, 0, 0.6)';
     bgEnvParticles.forEach(p => {

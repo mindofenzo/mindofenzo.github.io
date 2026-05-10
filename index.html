@@ -20,9 +20,17 @@
 
     <div id="level-select-layer" style="display: none;">
         <h2 class="title" style="margin-bottom: 30px;">Pick a Level!</h2>
-        <div class="level-card" id="level-cameron">
-            <div class="level-thumb">⭐</div>
-            <div class="level-title">Cameron</div>
+        
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+            <div class="level-card" id="level-cameron">
+                <div class="level-thumb">⭐</div>
+                <div class="level-title">Cameron</div>
+            </div>
+
+            <div class="level-card" id="level-safari" style="background: linear-gradient(135deg, #ffaa00, #ff0055);">
+                <div class="level-thumb">🦁</div>
+                <div class="level-title">Animals</div>
+            </div>
         </div>
         
         <div id="btn-back-start" style="margin-top: 40px; color: #fff; font-size: 1.5rem; text-decoration: underline; cursor: pointer; text-shadow: 0 2px 5px rgba(0,0,0,0.8);">
@@ -45,15 +53,13 @@
         </div>
     </div>
 
-    <audio id="music-space" src="music/Space.mp3" preload="auto"></audio>
-    <audio id="music-summer" src="music/Summer.mp3" preload="auto"></audio>
-    <audio id="music-winter" src="music/Winter.mp3" preload="auto"></audio>
-    <audio id="music-halloween" src="music/Halloween.mp3" preload="auto"></audio>
-    <audio id="music-easter" src="music/Easter.mp3" preload="auto"></audio>
+    <audio id="bg-music"></audio>
 
     <canvas id="gameCanvas"></canvas>
 
     <script src="pixelArt.js"></script>
+    <script src="level2PixelArt.js"></script>
+    <script src="levels.js"></script>
     <script src="game.js"></script>
 </body>
 </html>
